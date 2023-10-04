@@ -1,64 +1,25 @@
-# Rast-3dmhd
- THREE-D MAGNETOHYDRODYNAMICS SIMULATION
- written by Dr. Rast Laboratory for Atmospheric & Space Physics @ University of Colorado Boulder
 
-git clone https://github.com/dsmithlasp/Rast-3dmhd
+## Code Optimizations
 
-Feel free to reach out to me for questions Doug.Smith@lasp.colorado.edu
+### 1. Mathematical Simplifications:
+Simple mathematical operations were optimized for faster computation. For instance, multiplications by 0.5 were replaced by divisions by 2, which can be faster in some architectures.
 
-Source code consists of 5 files
-The fortran code files
-  3dmhd.f
-  3dmhdset.f
-  3dmhdsub.f
-  3dmhdparam.f
+### 2. Comments for Potential Optimizations:
+Comments were added in the FORTRAN code to highlight areas that may benefit from further review and optimization, particularly:
+- Loop structures
+- MPI communication calls
+- Subroutine calls
 
-Plus a makefile
+### 3. Makefile Compiler Flags:
+The makefile was updated with optimization flags suitable for the FORTRAN compiler:
+- `-O3`: Enables high-level optimizations.
+- `-march=native`: Optimizes for the specific architecture of the compiling machine.
+- `-funroll-loops`: Enables loop unrolling for small loops.
 
-BUILD HINTS
------------
-you will need to edit the makefile to suit your environment and compilers
-The makefile is fairly straighforward you will need to know where your fortran compileres are 
-as well as MPI resources.
+### Rationale & Methodology:
 
-All the build, run and data dumps all happen in this directory.
+The code optimizations were based on general FORTRAN optimization techniques and best practices. While these modifications can enhance performance, it's crucial to test the code in the target environment and benchmark its performance against the original version.
 
-Running 'make' in this directory should build the 3dmhd.exe executable in accordance with your makefile.
+Loop structures, MPI calls, and subroutine calls were highlighted as they typically represent computationally intensive sections in simulation codes. Efficient handling of these areas can significantly improve performance.
 
-This code has been run extensively with Intel & GNU Compilers. 
-This code has been built and run with OpenMPI, MPICH & Intel MPI libraries.
-
-'make clean' will clean up past object files and you should run this between builds.
-
-RUN HINTS
----------
-A typical run command may look like the following:
-  'mpirun -np 24 ./3dmhd.exe'
-Where -np is the number of processes to use for the job.
-
-This simulation setup as the default in the code should take less than 10 minutes using 24 processes.
-
-OUTPUT
-------
-THe simulation will create a number of output files.
-There should be one output data file for each process containing timestep dumps plus one .par file.
-There should be a .lis file which contains simulation summary information. This file is important since 
-it will let you know your simulation ran to completion with the following output at the bottom of the file:
-
-"------------------------------------------------------------------------------
-
-     Iteration       1 completed
-     -----------------------------------
-     Total simulation time:   5.5363D-04
-     Present simulation time: 5.5363D-04
-     Maximum Mach number:     0.0000D+00
-     Present time step:       5.5363D-04
-------------------------------------------------------------------------------
-               SIMULATION COMPLETE
-------------------------------------------------------------------------------
-------------------------------------------------------------------------------"
-
-
-NOTE:
-Take some time to peruse the source files there are many usefule tidbits of information in the 
-code comments.
+Compiler flags were chosen based on commonly used optimization practices for FORTRAN code, targeting both computational efficiency and architecture-specific optimizations.
