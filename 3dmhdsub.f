@@ -31,7 +31,15 @@ C----------------------------------------------------------------------
 C  Uniform grid. 
 C----------------------------------------------------------------------
 	CASE(0)
-	  SELECT CASE (ICOORD)
+	  
+    REAL*8 tan_s1, tan_s2, A_minus_B, A_plus_B, A_minus_B_sq, A_plus_B_sq
+    tan_s1 = TAN(S1)
+    tan_s2 = TAN(S2)
+    A_minus_B = A - B
+    A_plus_B = A + B
+    A_minus_B_sq = A_minus_B ** 2
+    A_plus_B_sq = A_plus_B ** 2
+SELECT CASE (ICOORD)
 	  CASE(1)
 	    SMAX=XMAX
 	  CASE(2)
@@ -86,8 +94,8 @@ C----------------------------------------------------------------------
           END SELECT	  
 C            
 	  A1=(S2-S1)/SMAX
-	  A3=ATAN(S1)
-	  A2=ATAN(S2)-A3
+	  A3=Atan_s1
+	  A2=Atan_s2-A3
           IF (SCODE.EQ.0.0E00) THEN
             SPHYS=0.0E00
           ELSE IF (SCODE.EQ.1.0E00) THEN
@@ -207,6 +215,8 @@ C
 C
 	RETURN
 	END
+! Potential optimizations: Consider parallelizing this loop using OpenMP directives if there are no inter-iteration dependencies.
+
 C**********************************************************************
 	SUBROUTINE YJACOBI
 C----------------------------------------------------------------------
@@ -279,6 +289,8 @@ C
 C
 	RETURN
 	END
+! Potential optimizations: Consider parallelizing this loop using OpenMP directives if there are no inter-iteration dependencies.
+
 C**********************************************************************
         SUBROUTINE ZJACOBI
 C----------------------------------------------------------------------
