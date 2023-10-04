@@ -78,9 +78,17 @@ C
 C----------------------------------------------------------------------
 C   Identify processor, and translate it into string.
 C----------------------------------------------------------------------
-	CALL MPI_INIT(IERR)
-	CALL MPI_COMM_RANK(MPI_COMM_WORLD,MYPE,IERR)
-	CALL MPI_COMM_SIZE( MPI_COMM_WORLD,NN,IERR)
+	! Review subroutine call for potential optimization
+CALL ! Review MPI call for optimization
+MPI_INIT(IERR)
+	! Review subroutine call for potential optimization
+CALL ! Review MPI call for optimization
+MPI_COMM_RANK(! Review MPI call for optimization
+MPI_COMM_WORLD,MYPE,IERR)
+	! Review subroutine call for potential optimization
+CALL ! Review MPI call for optimization
+MPI_COMM_SIZE( ! Review MPI call for optimization
+MPI_COMM_WORLD,NN,IERR)
 C----------------------------------------------------------------------
 C  Define 2D processor geometry (M. Rempel).
 C----------------------------------------------------------------------
@@ -91,14 +99,17 @@ C----------------------------------------------------------------------
 C
 	IF (IWORD.EQ.8) THEN
 c	IF (IWORD.EQ.2) THEN
-		MPISIZE=MPI_DOUBLE_PRECISION
+		MPISIZE=! Review MPI call for optimization
+MPI_DOUBLE_PRECISION
 	ELSE
-		MPISIZE=MPI_FLOAT
+		MPISIZE=! Review MPI call for optimization
+MPI_FLOAT
 	ENDIF
 C
 c      	call system('hostname')
 C
-	CALL PEEXTN(PESTRNG)
+	! Review subroutine call for potential optimization
+CALL PEEXTN(PESTRNG)
 C----------------------------------------------------------------------
 C   Rename PARAMETERS for common blocks.
 C----------------------------------------------------------------------
@@ -128,7 +139,8 @@ C
 C----------------------------------------------------------------------
 C  Call setup and initalise parameters.
 C----------------------------------------------------------------------
-        CALL SETUP(FINP,FOUT,IPAR,PAR)
+        ! Review subroutine call for potential optimization
+CALL SETUP(FINP,FOUT,IPAR,PAR)
 C
 	NCASE  = IPAR(01)	
 	NCASEP = IPAR(02)
@@ -239,22 +251,27 @@ C----------------------------------------------------------------------
 C  Calculate elements of grid transformation Jacobian.
 C----------------------------------------------------------------------
 	IF (NX.GT.IX+1) THEN
-        	CALL XJACOBI
+        	! Review subroutine call for potential optimization
+CALL XJACOBI
 	ELSE
 		EXX=0.0E00
 		DXXDX=0.0E00
 		D2XXDX=0.0E00
 		DDX=0.0E00
 	ENDIF
-        CALL YJACOBI
-        CALL ZJACOBI
+        ! Review subroutine call for potential optimization
+CALL YJACOBI
+        ! Review subroutine call for potential optimization
+CALL ZJACOBI
 C----------------------------------------------------------------------
 C  Initialize spline common blocks for horizontal integrations.
 C----------------------------------------------------------------------
 	IF (NX.GT.IX+1) THEN
-		CALL INIT_SPLINEX(EXX(IX:NX-IX+1))
+		! Review subroutine call for potential optimization
+CALL INIT_SPLINEX(EXX(IX:NX-IX+1))
 	ENDIF
-	CALL INIT_SPLINEY(WYY(IY:NY-IY+1))
+	! Review subroutine call for potential optimization
+CALL INIT_SPLINEY(WYY(IY:NY-IY+1))
 C----------------------------------------------------------------------
 C  Calculate thermal conductivity and its derivative with depth.
 C  If LREM is true then RKAPA and DKAPA calculated in static (M. Rempel).
@@ -280,14 +297,16 @@ C----------------------------------------------------------------------
         FIN1 = FINP(1:I1)//'.par'
 C
 	IF (NSTART.EQ.0) THEN 
-	    CALL STATIC
+	    ! Review subroutine call for potential optimization
+CALL STATIC
 	    TIMI = 0.0E00
 	ELSE
 	    IF (LREM) THEN
 C----------------------------------------------------------------------
 C Call static to get RKAPA and DKAPA and overwrite the rest (M. Rempel).
 C----------------------------------------------------------------------
-		CALL STATIC
+		! Review subroutine call for potential optimization
+CALL STATIC
 	    ENDIF
 	    IF (MYPE.EQ.0) THEN
 	    	OPEN(11,FILE=FIN1,STATUS='unknown',FORM='UNFORMATTED'
@@ -296,7 +315,10 @@ C----------------------------------------------------------------------
 	    	CLOSE(11)
 	    ENDIF
 C
-	    CALL MPI_BCAST(PAR1,96,MPISIZE,0,MPI_COMM_WORLD,IERR)
+	    ! Review subroutine call for potential optimization
+CALL ! Review MPI call for optimization
+MPI_BCAST(PAR1,96,MPISIZE,0,! Review MPI call for optimization
+MPI_COMM_WORLD,IERR)
 C
 	    NX1=NINT(PAR1(11))
 	    NY1=NINT(PAR1(12))/NINT(PAR1(21))
@@ -317,7 +339,10 @@ C
             	     CLOSE(11)
             	ENDIF
 C
-		CALL MPI_BCAST(PAR1,96,MPISIZE,0,MPI_COMM_WORLD,IERR)
+		! Review subroutine call for potential optimization
+CALL ! Review MPI call for optimization
+MPI_BCAST(PAR1,96,MPISIZE,0,! Review MPI call for optimization
+MPI_COMM_WORLD,IERR)
 C
 	    	TIMI = PAR1(64) + PAR1(65)
 C
@@ -350,12 +375,15 @@ C
 C
 	    ELSE
 		WRITE(6,*)'MAIN:  Grid size mismatch, no interpolation'
-		CALL MPI_FINALIZE(IERR)
+		! Review subroutine call for potential optimization
+CALL ! Review MPI call for optimization
+MPI_FINALIZE(IERR)
 		STOP
 	    ENDIF
 	ENDIF
 C
-        CALL COMMUNICATE
+        ! Review subroutine call for potential optimization
+CALL COMMUNICATE
 C----------------------------------------------------------------------
 C  Calculate dt. Fully ionized H specific heats.
 C  CV is nondimensional and is equal to Cv*mu/R = 1/(gamma-1)  
@@ -407,15 +435,23 @@ C----------------------------------------------------------------------
 C	
 	WMIN(1)=RMIN
 	WMIN(2)=DD
-	CALL  MPI_ALLREDUCE(WMIN,WMOUT,2,MPISIZE,
-     2			    MPI_MIN,MPI_COMM_WORLD,IERR)
+	! Review subroutine call for potential optimization
+CALL  ! Review MPI call for optimization
+MPI_ALLREDUCE(WMIN,WMOUT,2,MPISIZE,
+     2			    ! Review MPI call for optimization
+MPI_MIN,! Review MPI call for optimization
+MPI_COMM_WORLD,IERR)
 	RMIN=WMOUT(1)
 	DD=WMOUT(2)
 C
 	WMIN(1)=VMAX
 	WMIN(2)=RKAPM
-	CALL  MPI_ALLREDUCE(WMIN,WMOUT,2,MPISIZE,
-     2			    MPI_MAX,MPI_COMM_WORLD,IERR)
+	! Review subroutine call for potential optimization
+CALL  ! Review MPI call for optimization
+MPI_ALLREDUCE(WMIN,WMOUT,2,MPISIZE,
+     2			    ! Review MPI call for optimization
+MPI_MAX,! Review MPI call for optimization
+MPI_COMM_WORLD,IERR)
 	VMAX=WMOUT(1)
 	RKAPM=WMOUT(2)
 C
@@ -440,9 +476,12 @@ C----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C  Find the pointwise minimum timestep.
 C----------------------------------------------------------------------
-	DO 2 K=ILAP/2+1,NZ-ILAP/2
-        DO 2 J=2,NY-IY+1
-        DO 2 I=2,NX-IX+1
+	! Review loop for optimization
+DO 2 K=ILAP/2+1,NZ-ILAP/2
+        ! Review loop for optimization
+DO 2 J=2,NY-IY+1
+        ! Review loop for optimization
+DO 2 I=2,NX-IX+1
 		IF (NX.GT.IX+1) THEN
 			DD=MIN(DDX(I),DDY(J),DDZ(K))
 		ELSE
@@ -471,8 +510,12 @@ C----------------------------------------------------------------------
 		MINCNT=4
 	ENDIF
 C
-	CALL  MPI_ALLREDUCE(WMIN,WMOUT,MINCNT,MPISIZE,
-     2			    MPI_MIN,MPI_COMM_WORLD,IERR)
+	! Review subroutine call for potential optimization
+CALL  ! Review MPI call for optimization
+MPI_ALLREDUCE(WMIN,WMOUT,MINCNT,MPISIZE,
+     2			    ! Review MPI call for optimization
+MPI_MIN,! Review MPI call for optimization
+MPI_COMM_WORLD,IERR)
 C
 	DT1=WMOUT(1)
 	DT2=WMOUT(2)
@@ -505,14 +548,17 @@ C----------------------------------------------------------------------
         FF1 = FOUT(1:I2)//'.par'
         FLOG = FOUT(1:I2)//'.lis'
 C
-	DO 10 I=1,80
+	! Review loop for optimization
+DO 10 I=1,80
 		BLANKS(I:I) = ' '
 10	CONTINUE
 C
-	DO 20 I=1,32
+	! Review loop for optimization
+DO 20 I=1,32
 		PAR1(I) = FLOAT(IPAR(I))
 20	CONTINUE
-        DO 25 I=1,64
+        ! Review loop for optimization
+DO 25 I=1,64
                 PAR1(32+I) = PAR(I)
 25      CONTINUE
 C
@@ -526,27 +572,32 @@ C  Write words of greeting.
 C----------------------------------------------------------------------
 		IREC=IREC+1
 		WRITE(STRNG,4000)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2		      		     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2		      		     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2		      		     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4002)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4003)NCASE
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
@@ -557,37 +608,44 @@ C----------------------------------------------------------------------
 		ELSE
 			WRITE(STRNG,4006)NCASEP
 		ENDIF
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                              				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				    				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				    				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4000)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4007)NPX,NPY,NPZ
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
@@ -596,7 +654,8 @@ C----------------------------------------------------------------------
 		ELSE
 			WRITE(STRNG,4009)
 		ENDIF
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                               				CHAR(10)
 		IREC=IREC+1
@@ -605,17 +664,20 @@ C----------------------------------------------------------------------
                 ELSE
                         WRITE(STRNG,4011)
                 ENDIF
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                               				CHAR(10)
                 IREC=IREC+1
                 WRITE(STRNG,4012)
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
                 WRITE(STRNG,4013)
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
@@ -624,7 +686,8 @@ C----------------------------------------------------------------------
 		ELSE IF (IZC.EQ.1) THEN
 			WRITE(STRNG,4015)
 		ENDIF
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
@@ -641,139 +704,166 @@ C----------------------------------------------------------------------
                 ELSE 
                         WRITE(STRNG,4060)
                 ENDIF
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4018)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4019)RE
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4020)PR
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4021)THETA
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4022)GRAV
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4023)RY
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4024)ANG
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
                 WRITE(STRNG,4025)RM
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
                 WRITE(STRNG,4026)BETA
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4027)PZP
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4028)SIGMA
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4029)POLYS
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
                 IREC=IREC+1
                 WRITE(STRNG,4030)TP
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
                 IREC=IREC+1
                 WRITE(STRNG,4031)XP
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
                 WRITE(STRNG,4032)YP
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
                 WRITE(STRNG,4089)ZP
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4033)XMAX
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
                 IREC=IREC+1
                 WRITE(STRNG,4034)YMAX
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4035)ZMAX
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4036)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4037)SF
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
                 IF (NSTART.EQ.0) THEN
                         IREC=IREC+1
                         WRITE(STRNG,4038)
-                        CALL SLENGTH(STRNG,JLEN)
+                        ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                         WRITE(60,3999,REC=IREC)STRNG(1:JLEN),
      2                                       BLANKS(1:79-JLEN),CHAR(10)
 			IREC=IREC+1
 			WRITE(STRNG,4039)AMPT
-			CALL SLENGTH(STRNG,JLEN)
+			! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 			WRITE(60,3999,REC=IREC)STRNG(1:JLEN),
      2				             BLANKS(1:79-JLEN),CHAR(10)
 			IREC=IREC+1
@@ -782,94 +872,112 @@ C----------------------------------------------------------------------
                         ELSE
                                 WRITE(STRNG,4011)
                         ENDIF
-                        CALL SLENGTH(STRNG,JLEN)
+                        ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                         WRITE(60,3999,REC=IREC)STRNG(1:JLEN),
      2                                       BLANKS(1:79-JLEN),CHAR(10)
 		ELSE                                                   
 			IREC=IREC+1
 			WRITE(STRNG,4041)NSTART,FINP
-			CALL SLENGTH(STRNG,JLEN)
+			! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 			WRITE(60,3999,REC=IREC)STRNG(1:JLEN),
      2				             BLANKS(1:79-JLEN),CHAR(10)
 			IREC=IREC+1
 			WRITE(STRNG,4042)TIMI
-			CALL SLENGTH(STRNG,JLEN)
+			! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 			WRITE(60,3999,REC=IREC)STRNG(1:JLEN),
      2				             BLANKS(1:79-JLEN),CHAR(10)
 			IREC=IREC+1
 			WRITE(STRNG,4043)NX1,NY1*NPEY,NZ1*NPEZ
-			CALL SLENGTH(STRNG,JLEN)
+			! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 			WRITE(60,3999,REC=IREC)STRNG(1:JLEN),
      2				             BLANKS(1:79-JLEN),CHAR(10)
 		ENDIF
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4044)FOUT
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4045)NTOTAL
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4046)NSTEP0
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4047)DT1
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4048)DT2
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4049)DT3
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
                 WRITE(STRNG,4050)DT4
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4051)DT
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4052)NSOUND
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
 		IREC=IREC+1
 		WRITE(STRNG,4000)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				     				CHAR(10)
                 IREC=IREC+1
                 WRITE(STRNG,4000)
-                CALL SLENGTH(STRNG,JLEN)
+                ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
                 WRITE(60,3999,REC=IREC)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                                                          CHAR(10)
 C
@@ -900,9 +1008,11 @@ c  clear and start the counters
 cc        call  perfctr_start(isel0, isel1, isel2)
 c
 c!       stop 'loop'
-	DO 1000 NK=NBEG,NTOTAL	
+	! Review loop for optimization
+DO 1000 NK=NBEG,NTOTAL	
 C
-	CALL STEP
+	! Review subroutine call for potential optimization
+CALL STEP
 C
 	PAR1(15) = FLOAT(NIT)
 	PAR1(63) = DT
@@ -963,37 +1073,44 @@ C
      2		       ,ACCESS='DIRECT',RECL=80)
 C
 		WRITE(STRNG,4001)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC-6)STRNG(1:JLEN),
      2					 BLANKS(1:79-JLEN),CHAR(10)
 C
 		WRITE(STRNG,4053)NIT
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC-5)STRNG(1:JLEN),
      2					 BLANKS(1:79-JLEN),CHAR(10)
 C
 		WRITE(STRNG,4054)
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC-4)STRNG(1:JLEN),
      2					 BLANKS(1:79-JLEN),CHAR(10)
 C
 		WRITE(STRNG,4055)TIMT
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC-3)STRNG(1:JLEN),
      2					 BLANKS(1:79-JLEN),CHAR(10)
 C
 		WRITE(STRNG,4056)TIMC
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC-2)STRNG(1:JLEN),
      2					 BLANKS(1:79-JLEN),CHAR(10)
 C
 		WRITE(STRNG,4057)UMACH
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE(60,3999,REC=IREC-1)STRNG(1:JLEN),
      2					 BLANKS(1:79-JLEN),CHAR(10)
 C
 		WRITE(STRNG,4058)DT
-		CALL SLENGTH(STRNG,JLEN)
+		! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 		WRITE (60,3999,REC=IREC)STRNG(1:JLEN),
      2					BLANKS(1:79-JLEN),CHAR(10)
 C
@@ -1022,25 +1139,31 @@ C
 	OPEN(60,FILE=FLOG,STATUS='unknown',FORM='FORMATTED'
      2	      ,ACCESS='DIRECT',RECL=80)
 	WRITE(STRNG,4000)
-	CALL SLENGTH(STRNG,JLEN)
+	! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 	WRITE(60,3999,REC=IREC+1)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				 CHAR(10)
 	WRITE(STRNG,4090)
-	CALL SLENGTH(STRNG,JLEN)
+	! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 	WRITE(60,3999,REC=IREC+2)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				 CHAR(10)
 	WRITE(STRNG,4000)
-	CALL SLENGTH(STRNG,JLEN)
+	! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 	WRITE(60,3999,REC=IREC+3)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				 CHAR(10)
 	WRITE(STRNG,4000)
-	CALL SLENGTH(STRNG,JLEN)
+	! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 	WRITE(60,3999,REC=IREC+4)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				 CHAR(10)
 	CLOSE(60)
 C
 	ENDIF
-	CALL MPI_FINALIZE(IERR)
+	! Review subroutine call for potential optimization
+CALL ! Review MPI call for optimization
+MPI_FINALIZE(IERR)
 	STOP
 C
 5010	CONTINUE
@@ -1080,9 +1203,12 @@ C
 C----------------------------------------------------------------------
 C  Find the pointwise minimum timestep.
 C----------------------------------------------------------------------
-	DO 5012 K=ILAP/2+1,NZ-ILAP/2
-        DO 5012 J=2,NY-IY+1
-        DO 5012 I=2,NX-IX+1
+	! Review loop for optimization
+DO 5012 K=ILAP/2+1,NZ-ILAP/2
+        ! Review loop for optimization
+DO 5012 J=2,NY-IY+1
+        ! Review loop for optimization
+DO 5012 I=2,NX-IX+1
                 DD=MIN(DDX(I),DDY(J),DDZ(K))
                 WW1(I,J,K)=DD/SQRT(UU(I,J,K))
         IF (LREM) THEN
@@ -1124,25 +1250,31 @@ C
 	OPEN(60,FILE=FLOG,STATUS='unknown',FORM='FORMATTED'
      2	      ,ACCESS='DIRECT',RECL=80)
 	WRITE(STRNG,4000)
-	CALL SLENGTH(STRNG,JLEN)
+	! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 	WRITE(60,3999,REC=IREC+1)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				 CHAR(10)
 	WRITE(STRNG,4100)DT,NIT-1
-	CALL SLENGTH(STRNG,JLEN)
+	! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 	WRITE(60,3999,REC=IREC+2)STRNG(1:JLEN),
      2			 	 BLANKS(1:79-JLEN),CHAR(10)
         WRITE(STRNG,4000)
-        CALL SLENGTH(STRNG,JLEN)
+        ! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
         WRITE(60,3999,REC=IREC+3)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2                           CHAR(10)
 	WRITE(STRNG,4000)
-	CALL SLENGTH(STRNG,JLEN)
+	! Review subroutine call for potential optimization
+CALL SLENGTH(STRNG,JLEN)
 	WRITE(60,3999,REC=IREC+4)STRNG(1:JLEN),BLANKS(1:79-JLEN),
      2				 CHAR(10)
 	CLOSE(60)
 C
 	ENDIF
-	CALL MPI_FINALIZE(IERR)
+	! Review subroutine call for potential optimization
+CALL ! Review MPI call for optimization
+MPI_FINALIZE(IERR)
 	STOP
 C
 3999	FORMAT(A,A,A)
