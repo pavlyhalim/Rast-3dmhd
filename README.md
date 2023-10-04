@@ -14,7 +14,7 @@ Comments were added in the FORTRAN code to highlight areas that may benefit from
 The makefile was updated with optimization flags suitable for the FORTRAN compiler:
 - `-O3`: Enables high-level optimizations.
 - `-march=native`: Optimizes for the specific architecture of the compiling machine.
-- `-funroll-loops`: Enables loop unrolling for small loops.
+- `-unroll-loops`: Enables loop unrolling for small loops.
 
 ### Rationale & Methodology:
 
