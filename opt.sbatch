@@ -5,12 +5,8 @@
 #SBATCH --error=3dmhd_error.log      # Error output file name
 #SBATCH --mem=80GB                   # Request 80GB of memory
 #SBATCH --nodes=2                    # Number of nodes
-#SBATCH --ntasks-per-node=12         # Number of tasks (processes) per node. Adjust if needed.
+#SBATCH --ntasks-per-node=24         # Number of tasks (processes) per node. Adjust if needed.
 #SBATCH --time=01:00:00              # Walltime (HH:MM:SS)
-
-
-# Load necessary modules 
-module load openmpi/intel/4.1.1 
 
 # Run the job
 mpirun -np 24 ./3dmhd.exe
