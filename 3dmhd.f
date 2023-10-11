@@ -102,29 +102,27 @@ C
 C----------------------------------------------------------------------
 C   Rename PARAMETERS for common blocks.
 C----------------------------------------------------------------------
-	IXC=IXCON
-	IYC=IYCON
-	IZC=IZCON
-	ITC=ITCON
-	IBC=IBCON
-	SF=SFF
-C
-        C13=1.0E00/3.0E00
-        C23=2.0E00*C13
-        C43=4.0E00*C13
-C
-	GAM1=8.0E00/15.0E00
-	GAM2=5.0E00/12.0E00
-	GAM3=3.0E00/4.0E00
-	ZETA1=-17.0E00/60.0E00
-	ZETA2=-5.0E00/12.0E00
-C
-	HX=0.5E00*FLOAT(NPX-1)
-        H2X=FLOAT(NPX-1)*FLOAT(NPX-1)
-        HY=0.5E00*FLOAT(NPY-1)
-        H2Y=FLOAT(NPY-1)*FLOAT(NPY-1)
-        HZ=0.5E00*FLOAT(NPZ-1)
-        H2Z=FLOAT(NPZ-1)*FLOAT(NPZ-1)
+C Constants
+
+C13 = 1.0E00 / 3.0E00
+GAM1 = 8.0E00 / 15.0E00
+GAM2 = 5.0E00 / 12.0E00
+GAM3 = 3.0E00 / 4.0E00
+ZETA1 = -17.0E00 / 60.0E00
+ZETA2 = -5.0E00 / 12.0E00
+
+C Derived constants from C13
+C23 = 2.0E00 * C13
+C43 = 4.0E00 * C13
+
+C Computations related to NPX, NPY, and NPZ
+HX = 0.5E00 * FLOAT(NPX-1)
+H2X = HX * HX
+HY = 0.5E00 * FLOAT(NPY-1)
+H2Y = HY * HY
+HZ = 0.5E00 * FLOAT(NPZ-1)
+H2Z = HZ * HZ
+
 C----------------------------------------------------------------------
 C  Call setup and initalise parameters.
 C----------------------------------------------------------------------
